@@ -182,7 +182,7 @@ async function fetchServiceSupplyContracts() {
 ```javascript
 const axios = require('axios');
 
-async function fetchServiceSupplyContracts(id) {
+async function fetchContractById(id) {
   try {
     const response = await axios.get(
       'https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records',
