@@ -1,0 +1,61 @@
+{
+"idweb":"BXP06144130461T",
+"id":"BXP06144130461T",
+"contractfolderid":null,
+"annonce_reference_schema_v110":"A/20060101/273",
+"objet":"plate forme pour enceintes à hygrométrie à Saint Pierre.",
+"filename":"MPA20060101",
+"famille":"FNS",
+"code_departement":[
+"974"
+],
+"code_departement_prestation":null,
+"famille_libelle":"Marchés entre 90 k€ et seuils européens",
+"dateparution":"2006-05-27",
+"datefindiffusion":"2006-06-27",
+"datelimitereponse":"2006-06-27T00:00:00+00:00",
+"nomacheteur":"sga/dcsid/dt-sds.",
+"titulaire":null,
+"perimetre":"AUTRE",
+"type_procedure":"OUVERT",
+"soustype_procedure":null,
+"procedure_libelle":"Procédure Ouverte",
+"procedure_categorise":"OUVERT/",
+"nature":"APPEL_OFFRE",
+"sousnature":"STANDARD",
+"nature_libelle":"Avis de marché",
+"sousnature_libelle":null,
+"nature_categorise":"appeloffre/standard",
+"nature_categorise_libelle":"Avis de marché/",
+"criteres":null,
+"marche_public_simplifie":null,
+"marche_public_simplifie_label":null,
+"etat":"INITIAL",
+"descripteur_code":[
+"141"
+],
+"dc":[
+"141"
+],
+"descripteur_libelle":[
+"Génie civil"
+],
+"type_marche":[
+"TRAVAUX"
+],
+"type_marche_facette":[
+"Travaux"
+],
+"type_avis":[
+"5",
+"1",
+""
+],
+"annonce_lie":null,
+"annonces_anterieures":null,
+"annonces_anterieures_schema_v110":null,
+"source_schema":"Boamp_v110.xsd",
+"gestion":"{"NOJO": "BXP06144130461T", "R2": "3", "R3": "974", "TETIER_R3": "974 - Réunion", "R4": "50", "TETIER_R4": "Avis d'appel public à la concurrenceAutres avis d'appel public", "K9": "27062006", "NUM_ANN": "273", "NOM_HTML": "/2006/MPA/MPA20060101/200605270273A.HTM", "REFERENCE": {"IDWEB": "BXP06144130461T", "TYPE_AVIS": {"FAMILLE": {"FNS": ""}, "PERIMETRE": {"AUTRE": ""}, "NATURE": {"APPEL_OFFRE": {"STANDARD": ""}}, "STATUT": {"INITIAL": ""}}}, "INDEXATION": {"NOMPUBLICATION": "A", "NUMEROANNONCE": "273", "DATE_PUBLICATION": "2006-05-27", "ANNONCEREF": "A/20060101/273", "DATE_FIN_DIFFUSION": "2006-06-27", "DATE_LIMITE_REPONSE": "2006-06-27", "DESCRIPTEURS": {"DESCRIPTEUR": {"CODE": "141", "LIBELLE": "Génie civil"}}, "CRITERES_SOCIAUX_ENV": "", "DEP_PUBLICATION": "974", "RESUME_OBJET": "plate forme pour enceintes à hygrométrie à Saint Pierre.", "NOMACHETEUR_V1": "sga/dcsid/dt-sds.", "TYPE_PROCEDURE_V1": "OUVERT", "GENRE_V1": "1", "RAPPEL_V1": "0", "NUMPARUTION": "20060101"}}",
+"donnees":"{"INFO": {"TRAVAUX": "", "ETAT": ""}, "TYPE_ACTIVITE_ORG": "", "IDENT": {"TITRE": "Nom et adresse officiels de l'organisme acheteur :", "NOM": "sga/dcsid/dt-sds.", "PRM": "directeur des travaux de saint denis,", "ADRESSE": "quartier reydellet Cedex 9,", "CP": "97709", "VILLE": "Saint-Denis,", "TEL": "02-62-93-52-86,", "FAX": "02-62-93-53-37,", "MEL": "dtzsoi.marches@wanadoo.fr,", "URL": "http://www.dtzsoi.com."}, "OBJET": {"TITRE": "Objet du marché :", "OBJET_COMPLET": "saint pierre - plate forme pour enceintes à hygrométrie.", "AUTRES": ["Type de marché de travaux :", "Lieu d'exécution et de livraison : caserne cba dupuis, 97400 Saint-Pierre."], "EXECUTION": ""}, "CARACTERISTIQUES": {"TITRE": "Caractéristiques principales :", "AUTRES": ["création d'une plate forme", "Prestations divisées en lots : non."], "VARIANTE": ""}, "DUREE": {"TITRE": "Durée du marché ou délai d'exécution :", "EN_DUREE": "5 mois"}, "CONDITIONS": {"RELATIVES": {"CAUTIONNEMENT": "la durée de garantie de parfait achèvement est d'un an à compter de la date d'effet de la réception.", "FINANCEMENT": "les sommes dues en exécution du marché seront payées mensuellement par virement dans un délai global de paiement de 45 jours conformément à la circulaire du 13 mars 2002 relative à la mise en oeuvre du délai maximum de paiement dans les marchés public.Il est prévu une avance forfaitaire conformément à l'article 87 du code des marchés publics.Le marché sera conclu à prix global forfaitaire.Les prix sont fermes actualisables.", "GROUPEMENTS": "le présent marché sera attribué à une entreprise générale ou à un groupement solidaire d'entreprises générales.Après attribution du marché, l'administration se réserve le droit de modifier la forme du groupement (conjoint ou solidaire) (article 51 du code des marchés publics).", "AUTRES": "Unité monétaire utilisée, l'euro."}, "PARTICIPATION": {"TITRE": "Conditions de participation :", "AUTRES": "Critères de sélection des candidatures :se référer à l'article \"pièces justificatives administratives\".", "FORME_JUR": "les certificats de qualification ou d'identité professionnelle ou la liste des travaux similaires exécutés au cours des 5 dernières années avec références des maîtres d'ouvrage attestant de la compétence du candidat à réaliser la prestation demandée.", "CAP_ECO": "le chiffre d'affaires (Ht) des 3 derniers exercices."}, "JUSTIFICATIONS": {"TITRE": "Justifications à produire quant aux qualités et capacités du candidat :", "AUTRES": "- DC 4 : lettre de candidature- copie jugement : si redressement judiciaire- déclaration sur l'honneur : - a satisfait à l'ensemble de ses obligations fiscales et sociales telles qu'elles résultent du code des marchés publics ou règles d'effet équivalent pour les candidats non établis en France- ne fait pas l'objet d'une interdiction de concourir aux marchés publics ou règles d'effet équivalent pour les candidats non établis en France- n'a pas fait l'objet au cours des 5 dernières années d'une condamnation inscrite au bulletin n° 2 du casier judiciaire pour les infractions visées aux articles L. 324-9, L. 324-10, L. 341-6, L. 125-1 et L. 125-3 du code du travail ou règles d'effet équivalent pour les candidats non établis en France-N'Avoir pas fait l'objet, au cours des cinq dernières années d'une condamnation définitive pour l'une des infractions prévues par les articles 222-38, 222-40, 313-1 à 313-3, 314-1 à 314-3, 324-1 à 324-6, 421-2-1, par le deuxième alinéa de l'article 421-5, par l'article 433-1, par le deuxième alinéa de l'article 434-9, par les articles 435-2, 441-1 à 441-7, par les premier et deuxième alinéas de l'article 441-8, par l'article 441-9 et par l'article 450-1 du code pénal, ainsi que par le deuxième alinéa de l'article L. 152-6 du code du travail et par l'article 1741 du code général des impôts ou règles d'effet équivalent pour les candidats non établis en France- les documents ou attestations figurant à l'article R324.4 du code du travailnb: ces attestations et documents doivent dater de moins de 6 mois à compter de la date limite de remise des offres."}, "CRITERES": {"TITRE": "Critères d'attribution :", "CRITERES_LISTE": "", "LISTE": "- valeur financière : 60 %;- valeur technique : 40 %."}}, "PROCEDURE": {"@type": "ouvert"}, "DELAI": {"RECEPT_OFFRES": "27 juin 2006", "AUTRES": [", à 16 heures", "à compter de la date de reception des offres"], "VALIDITE_OFFRE": "180 jours"}, "RENSEIGNEMENTS": {"REF_PP": "DEN97438RN05.", "RENS_COMPLEMENT": "- l'obtention du dossier de consultation par le candidat peut se faire soit par le portail www.dtzsoi.com soit par envoi postal ou contre récépissé après demande par télécopie.- la remise de son offre peut se faire soit par le portail www.achats.defense.gouv.fr soit par envoi postal ou contre récépissé.Dans le cas où le candidat remet une offre dématérialisée, les autorités de certification sont :* certinomis-sociéposte* crédit lyonnais* BNP paribas* certeurope* certigreffe* chamber-sign* cedicam-crédit agricoleles formats acceptés sont : word, excel, pdf et jpg.Le logiciel antivirus utilisé par l'administration est macafee 4-5-1."}, "ENVOI_BOMP": "22 mai 2006", "CLASSES": {"CLASSE": "Travaux de construction"}, "AUTRES": ["", "974 plate forme pour enceintes à hygrométrie à Saint Pierre."], "DESCRIPTEURS": {"DESCRIPTEUR": "Génie civil"}}",
+"url_avis":"https://www.boamp.fr/pages/avis/?q=idweb:BXP06144130461T"
+}

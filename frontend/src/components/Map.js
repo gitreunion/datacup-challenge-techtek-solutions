@@ -21,8 +21,11 @@ export default function Map() {
             }).addTo(map);
 
             const marker = L.marker([-21.01, 55.27]).addTo(map)
-                .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-                .openPopup();
+                .setIcon(L.icon({
+                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30],
+                }))
 
             marker.on('click', () => {
                 map.setView(marker.getLatLng(), 15);
@@ -37,10 +40,10 @@ export default function Map() {
 
     return (
         <div className="relative">
-            <Header className={showInfoTab ? 'ml-1/4' : ''} />
+            <Header className={showInfoTab ? 'translate-x-1/4' : ''} />
             <div id="map" style={{ height: '100vh', zIndex: 1 }} />
-            {showInfoTab && <InfoTab />}
             <RightSide />
+            {showInfoTab && <InfoTab onClose={() => setShowInfoTab(false)} />}
         </div>
     );
 };
