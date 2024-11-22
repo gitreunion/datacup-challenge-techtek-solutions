@@ -1,9 +1,15 @@
 import React from "react";
 
-export default function InfoTab() {
+export default function InfoTab({ onClose }) {
     return (
         <div className="absolute left-0 top-0 h-full w-1/4 p-4 bg-white z-50 shadow-lg">
             <div className="flex flex-col items-start space-y-4">
+                <button 
+                    className="self-end bg-red-500 hover:bg-red-700 text-white font-bold px-4 rounded-full h-8"
+                    onClick={onClose}
+                >
+                    Close
+                </button>
                 <div className="flex items-center space-x-2">
                     <img
                         className="h-12 w-12 rounded-full"

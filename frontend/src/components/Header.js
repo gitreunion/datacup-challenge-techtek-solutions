@@ -5,11 +5,11 @@ import WidgetsItems from "./WidgetsItems";
 
 export default function Header({ className }) {
     return (
-        <header className={`absolute w-full p-4 flex items-center ${className}`} style={{ zIndex: 1000 }}>
+        <header className={`absolute w-full p-4 flex items-center transition-all ${className}`} style={{ zIndex: 1000 }}>
             <div className="flex items-center space-x-4">
                 <div className="relative">
                     <input
-                        className="ml-2 border rounded-full p-4 h-12 w-60"
+                        className="ml-2 border rounded-full p-4 h-12 w-60 border-gray-200 focus:outline-none"
                         type="text"
                         placeholder="Recherche"
                     />
@@ -25,4 +25,4 @@ export default function Header({ className }) {
             </div>
         </header>
     );
-}
+};
