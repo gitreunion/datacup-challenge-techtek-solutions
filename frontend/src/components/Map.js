@@ -3,6 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import InfoTab from './InfoTab';
 import Header from "./Header";
+import RightSide from "./RightSide";
 
 export default function Map() {
     const [showInfoTab, setShowInfoTab] = useState(false);
@@ -41,6 +42,7 @@ export default function Map() {
         <div className="relative">
             <Header className={showInfoTab ? 'translate-x-1/4' : ''} />
             <div id="map" style={{ height: '100vh', zIndex: 1 }} />
+            <RightSide />
             {showInfoTab && <InfoTab onClose={() => setShowInfoTab(false)} />}
         </div>
     );
