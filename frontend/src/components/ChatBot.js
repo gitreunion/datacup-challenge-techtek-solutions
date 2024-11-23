@@ -47,7 +47,7 @@ const ChatBot = ({className}) => {
                         <p className="text-sm text-[#6b7280] leading-3">Powered by TechTek solutions</p>
                     </div>
 
-                    <div className="pr-4 h-[474px] overflow-y-auto" style={{ minWidth: '100%', display: 'table' }}>
+                    <div className="pr-4 h-[474px] overflow-y-auto" style={{ minWidth: '100%' }}>
                         {messages.map((message, index) => (
                             <div key={index} className="flex gap-3 my-4 text-gray-600 text-sm flex-1">
                                 <span className="relative flex shrink-0 overflow-hidden rounded-full w-8 h-8">
