@@ -36,32 +36,58 @@ const ChatBot = ({ className }) => {
         
 
         try {
-            // Envoie la requête à l'API backend avec le contexte
-            const response = await fetch('http://localhost:11434/api/chat', {
-                method: 'POST',
+            // // Envoie la requête à l'API backend avec le contexte
+            // const response = await fetch('http://localhost:11434/api/generate', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         Accept: 'application/json, text/plain, */*',
+            //     },
+            //     body: JSON.stringify({
+            //         message: inputValue,
+            //         model: 'llama3.1', // Spécifie le modèle AI à utiliser
+            //         context: context, // Ajoute le contexte à la requête
+            //     }),
+            // })
+
+            // if (!response.ok) {
+            //     throw new Error(
+            //         'Erreur lors de la récupération de la réponse du serveur'
+            //     )
+            // }
+            fetch("http://localhost:8000/generate", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json, text/plain, */*',
+                  "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    message: inputValue,
-                    model: 'llama3.1', // Spécifie le modèle AI à utiliser
-                    context: context, // Ajoute le contexte à la requête
-                }),
-            })
-
-            if (!response.ok) {
-                throw new Error(
-                    'Erreur lors de la récupération de la réponse du serveur'
-                )
-            }
+                  prompt: "Votre texte ici",
+                  model: "llama3.1"
+                })
+              })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  console.log("Generated text:", data.generated_text);
+                  setMessages((prevMessages) => [
+                    ...prevMessages,
+                    { sender: 'AI', text: data.generated_text },
+                ])
+                })
+                .catch(error => {
+                  console.error("Error:", error);
+                });
 
             // Attend la réponse de l'API et l'ajoute à la liste des messages
-            const aiResponse = await response.text()
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { sender: 'AI', text: aiResponse },
-            ])
+            // const aiResponse = await response.text()
+            // setMessages((prevMessages) => [
+            //     ...prevMessages,
+            //     { sender: 'AI', text: data.generated_text },
+            // ])
         } catch (error) {
             // Gère les erreurs liées à la requête API et envoie un message d'erreur
             console.error('Error calling API:', error)
