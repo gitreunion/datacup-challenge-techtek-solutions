@@ -15,9 +15,9 @@ export default function InfoTab({ contracts, onClose }) {
                         contract.id ? (
                             <div key={contract.id} className="p-2 border-b border-gray-200">
                                 <h3 className="font-bold">{contract.objet}</h3>
-                                <p>Date de parution: {contract.dateparution}</p>
-                                <p>Date de fin de diffusion: {contract.datefindiffusion}</p>
-                                <p>Date limite de réponse: {contract.datelimitereponse}</p>
+                                <p>Date de parution: {new Date(contract.dateparution).toLocaleDateString()}</p>
+                                <p>Date de fin de diffusion: {new Date(contract.datefindiffusion).toLocaleDateString()}</p>
+                                <p>Date limite de réponse: {new Date(contract.datelimitereponse).toLocaleDateString()}</p>
                                 <p>Nom de l'acheteur: {contract.nomacheteur}</p>
                             </div>
                         ) : null
