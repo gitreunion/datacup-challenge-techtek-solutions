@@ -2,15 +2,15 @@ import React from "react";
 
 export default function InfoTab({ contracts, onClose }) {
     return (
-        <div className="absolute left-0 top-0 h-full w-1/4 p-4 bg-white z-50 shadow-lg">
-            <div className="flex flex-col items-start space-y-4">
+        <div className="fixed left-0 top-0 h-full w-1/4 p-4 bg-white z-50 shadow-lg overflow-hidden">
+            <div className="flex flex-col h-full">
                 <button 
                     className="self-end bg-red-500 hover:bg-red-700 text-white font-bold px-4 rounded-full h-8"
                     onClick={onClose}
                 >
                     Close
                 </button>
-                <div className="overflow-y-auto max-h-[100vh]">
+                <div className="overflow-y-auto flex-1 max-h-full">
                     {contracts.map(contract => (
                         contract.id ? (
                             <div key={contract.id} className="p-2 border-b border-gray-200">
