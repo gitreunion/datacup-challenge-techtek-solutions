@@ -10,6 +10,7 @@ import InfoTab from './InfoTab';
 import Header from "./Header";
 import RightSide from "./RightSide";
 import ChatBot from "./ChatBot.js";
+import Agrandir from "./agrandir.png";
 
 function getKeyValue(obj, keys) {
     if (!Array.isArray(keys)) {
@@ -47,7 +48,7 @@ export default function Map() {
     const [selectedContract, setSelectedContract] = useState(null);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
-    
+
     useEffect(() => {
         if (!L.DomUtil.get('map')._leaflet_id) {
             const mapInstance = L.map('map', {
@@ -56,16 +57,23 @@ export default function Map() {
                 zoomControl: false,
             });
             setMap(mapInstance);
-
+        
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
             }).addTo(mapInstance);
-
+        
             L.control.zoom({
                 position: 'bottomright',
             }).addTo(mapInstance);
         }
     }, []);
+
+    const handleRecenter = () => {
+        if (map) {
+            map.setView([-21.105158264291664, 55.52111226755224], 10);
+            setShowInfoTab(false);
+        }
+    };
 
     useEffect(() => {
         if (map) {
@@ -131,31 +139,30 @@ export default function Map() {
 
                         const coordinates = gpsdata[cp] || gpsdata["97400"];
                         if (!coordinates) {
-                            console.warn(`No coordina{tes found for postal code: ${cp}`);
+                            console.warn(`No coordinates found for postal code: ${cp}`);
                             return;
                         }
                         
                         const { Longitude, Latitude } = coordinates;
                         if (result.objet.toLowerCase().includes(search.toLowerCase())) {
-                        const marker = L.marker([Latitude, Longitude], {
-                            icon: L.icon({
-                                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                                iconSize: [30, 30],
-                                iconAnchor: [15, 30],
-                            }),
-                        });
+                            const marker = L.marker([Latitude, Longitude], {
+                                icon: L.icon({
+                                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                                    iconSize: [30, 30],
+                                    iconAnchor: [15, 30],
+                                }),
+                            });
 
-                        marker.on('click', () => {
-                            setCurrentPostalCode(cp);
-                            setShowInfoTab(true);
-                            setShowAllContracts(false);
-                            map.setView([Latitude, Longitude], 15);
-                        });
-                    
+                            marker.on('click', () => {
+                                setCurrentPostalCode(cp);
+                                setShowInfoTab(true);
+                                setShowAllContracts(false);
+                                map.setView([Latitude, Longitude], 15);
+                            });
 
-                        markerClusterGroup.addLayer(marker, { chunkedLoading: true, chunkProgress: true });
+                            markerClusterGroup.addLayer(marker);
+                        }
                     }
-                }
                 });
 
                 offset += limit;
@@ -170,6 +177,7 @@ export default function Map() {
             setIsLoading(false);
         }
     }
+
     const filteredContracts = contracts.filter((contract) => {
         const donnees = typeof contract.donnees === 'string' ? JSON.parse(contract.donnees) : contract.donnees;
         const cp = getKeyValue(donnees, ["cp", "Code postal", "code postal"]);
@@ -197,9 +205,16 @@ export default function Map() {
             >
                 {isLoading ? 'Chargement...' : `${contracts.length} contrats trouvés`}
             </button>
-            <ChatBot
-                className={showInfoTab ? 'translate-x-60' : ''}
-            />
+            
+            <button
+                className="absolute bottom-24 right-3 bg-white text-black z-50 rounded-sm border-1 border-black"
+                onClick={handleRecenter}
+            >
+                <img src={Agrandir} alt="Recenter" width="30" height="30" />
+            </button>
+
+            <ChatBot className={showInfoTab ? 'translate-x-60' : ''} />
+
             {showInfoTab && (
                 <InfoTab
                     contracts={showAllContracts ? contracts : filteredContracts}
@@ -208,7 +223,6 @@ export default function Map() {
                     selectedContract={selectedContract}
                 />
             )}
-
         </div>
     );
 }
