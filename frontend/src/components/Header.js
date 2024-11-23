@@ -20,8 +20,10 @@ export default function Header({ className }) {
                 </div>
             </div>
 
-            <div className="relative ml-6">
-                <WidgetsItems name="S'inscrire" />
+            <div className="relative ml-6 flex gap-6">
+                <WidgetsItems name="Fournitures" />
+                <WidgetsItems name="Services" />
+                <WidgetsItems name="Travaux" />
             </div>
         </header>
     );
