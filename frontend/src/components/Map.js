@@ -69,16 +69,16 @@ export default function Map() {
 
     useEffect(() => {
         if (map) {
-            fetchContracts(map, category);
+            fetchContracts(map, category, search);
         }
-    }, [category, map]);
+    }, [category, map, search]);
 
-    async function fetchContracts(mapInstance, category) {
+    async function fetchContracts(mapInstance, category, search) {
         const limit = 100;
         let offset = 0;
         const allContracts = [];
         const processedPostalCodes = new Set();
-    
+        
         setIsLoading(true);
         if (mapInstance.markerClusterGroup) {
             mapInstance.removeLayer(mapInstance.markerClusterGroup);
@@ -108,7 +108,7 @@ export default function Map() {
                 if (results.length === 0) {
                     break;
                 }
-
+    
                 results.forEach((result) => {
                     var date_now = new Date();
                     var date_limit = new Date(result.datelimitereponse);
@@ -118,8 +118,7 @@ export default function Map() {
                         allContracts.push(result);
                     }
                 });
-
-                // Process the current batch of contracts
+    
                 results.forEach((result) => {
                     let { donnees } = result;
                     if (typeof donnees === 'string') {
@@ -138,29 +137,36 @@ export default function Map() {
     
                         const { Longitude, Latitude } = coordinates;
     
-                        const marker = L.marker([Latitude, Longitude], {
-                            icon: L.icon({
-                                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                                iconSize: [30, 30],
-                                iconAnchor: [15, 30],
-                            }),
-                        });
+                        if (result.objet.toLowerCase().includes(search.toLowerCase())) {
+                            const marker = L.marker([Latitude, Longitude], {
+                                icon: L.icon({
+                                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                                    iconSize: [30, 30],
+                                    iconAnchor: [15, 30],
+                                }),
+                            });
     
-                        marker.on('click', () => {
-                            setSelectedContract(result);
-                            setShowInfoTab(true);
-                            setShowAllContracts(false);
-                            mapInstance.setView([Latitude, Longitude], 15);
-                        });
-
-                        markerClusterGroup.addLayer(marker, { chunkedLoading: true, chunkProgress: true });
+                            marker.on('click', () => {
+                                setSelectedContract(result);
+                                setShowInfoTab(true);
+                                setShowAllContracts(false);
+                                mapInstance.setView([Latitude, Longitude], 15);
+                            });
+    
+                            markerClusterGroup.addLayer(marker, { chunkedLoading: true, chunkProgress: true });
+                        }
                     }
                 });
     
                 offset += limit;
             }
     
-            setContracts(allContracts);
+            const filteredContracts = allContracts.filter(contract => {
+                return contract.objet.toLowerCase().includes(search.toLowerCase());
+            });
+    
+            setContracts(filteredContracts);
+    
         } catch (error) {
             console.error('Error fetching contracts:', error.message);
             alert('Failed to fetch contracts. Please try again later.');
@@ -168,6 +174,7 @@ export default function Map() {
             setIsLoading(false);
         }
     }
+    
     
 
     const filteredContracts = contracts.filter((contract) => {
@@ -181,7 +188,7 @@ export default function Map() {
             <Header 
                 className={showInfoTab ? 'translate-x-1/4' : ''} 
                 search={search} 
-                onSearchChange={setSearch} 
+                setSearch={setSearch} 
                 onCategoryChange={setCategory}
             />
             <div id="map" style={{ height: '100vh', zIndex: 1 }} />
