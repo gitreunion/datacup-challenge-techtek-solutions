@@ -4,7 +4,7 @@ import L from 'leaflet';
 import InfoTab from './InfoTab';
 import Header from "./Header";
 import RightSide from "./RightSide";
-import axios, { all } from 'axios';
+import axios from 'axios';
 import gpsdata from '../data.js';
 
 function getKeyValue(obj, keys) {
@@ -41,6 +41,7 @@ export default function Map() {
     const [map, setMap] = useState(null);
     const [currentPostalCode, setCurrentPostalCode] = useState("97400");
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedContract, setSelectedContract] = useState(null);
 
     useEffect(() => {
         // Initialize Leaflet map
@@ -169,6 +170,8 @@ export default function Map() {
                 <InfoTab
                     contracts={showAllContracts ? contracts : filteredContracts}
                     onClose={() => setShowInfoTab(false)}
+                    onSelectContract={setSelectedContract}
+                    selectedContract={selectedContract}
                 />
             )}
         </div>
