@@ -142,7 +142,6 @@ export default function Map() {
         }
     }
 
-    // Filter contracts based on the current postal code
     const filteredContracts = contracts.filter((contract) => {
         const donnees = typeof contract.donnees === 'string' ? JSON.parse(contract.donnees) : contract.donnees;
         const cp = getKeyValue(donnees, ["cp", "Code postal", "code postal"]);
