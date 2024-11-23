@@ -9,6 +9,7 @@ import gpsdata from '../data.js';
 import InfoTab from './InfoTab';
 import Header from "./Header";
 import RightSide from "./RightSide";
+import ChatBot from "./ChatBot.js";
 
 function getKeyValue(obj, keys) {
     if (!Array.isArray(keys)) {
@@ -197,7 +198,9 @@ export default function Map() {
             >
                 {isLoading ? 'Chargement...' : `${contracts.length} contrats trouvés`}
             </button>
-
+            <ChatBot
+                className={showInfoTab ? 'translate-x-60' : ''}
+            />
             {showInfoTab && (
                 <InfoTab
                     contracts={showAllContracts ? contracts : filteredContracts}
@@ -206,6 +209,7 @@ export default function Map() {
                     selectedContract={selectedContract}
                 />
             )}
+
         </div>
     );
 }
