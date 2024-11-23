@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import 'leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import axios from 'axios';
+import gpsdata from '../data.js';
 import InfoTab from './InfoTab';
 import Header from "./Header";
 import RightSide from "./RightSide";
-import axios, { all } from 'axios';
-import gpsdata from '../data.js';
 
+// Utility function to retrieve deeply nested values from an object
 function getKeyValue(obj, keys) {
     if (!Array.isArray(keys)) {
         keys = [keys];
@@ -64,17 +68,21 @@ export default function Map() {
         }
     }, []);
 
-    // Function to fetch contracts in batches of 20
+    // Function to fetch contracts in batches of 100
     async function fetchAllContracts(mapInstance) {
-        const limit = 100; // Number of contracts per batch
-        let offset = 0; // Starting offset
+        const limit = 100;
+        let offset = 0;
         const allContracts = [];
         const processedPostalCodes = new Set();
 
         setIsLoading(true);
 
+        // Create a MarkerClusterGroup
+        const markerClusterGroup = L.markerClusterGroup();
+        mapInstance.addLayer(markerClusterGroup);
+
         try {
-            while (allContracts.length < 300) {
+            while (allContracts.length < 1000) {
                 const response = await axios.get(
                     'https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records',
                     {
@@ -90,12 +98,11 @@ export default function Map() {
 
                 const results = response.data.results || [];
                 if (results.length === 0) {
-                    // Break the loop when no more contracts are returned
                     break;
                 }
                 allContracts.push(...results);
 
-                // Process current batch of contracts
+                // Process the current batch of contracts
                 results.forEach((result) => {
                     let { donnees } = result;
                     if (typeof donnees === 'string') {
@@ -113,23 +120,27 @@ export default function Map() {
                         }
 
                         const { Longitude, Latitude } = coordinates;
-                        const marker = L.marker([Latitude, Longitude])
-                            .addTo(mapInstance)
-                            .setIcon(L.icon({
+
+                        const marker = L.marker([Latitude, Longitude], {
+                            icon: L.icon({
                                 iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
                                 iconSize: [30, 30],
                                 iconAnchor: [15, 30],
-                            }));
+                            }),
+                        });
 
                         marker.on('click', () => {
                             setCurrentPostalCode(cp);
                             setShowInfoTab(true);
                             setShowAllContracts(false);
                         });
+
+                        // Add marker to the cluster group
+                        markerClusterGroup.addLayer(marker);
                     }
                 });
 
-                offset += limit; // Increment offset for the next batch
+                offset += limit;
             }
 
             setContracts(allContracts); // Update state with all contracts
