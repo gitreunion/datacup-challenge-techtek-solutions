@@ -2,21 +2,31 @@
 
 ## Data Collection
 
-Indicate how to collect the data necessary for this project :
-- Where and how to get the data ?
-- Where and how to integrate the data in the repository ? (example : in the direcctory data/raw)
+See the [data collection documentation](/DATA.md) for more information on how to collect the data.
+All the data is collected from the [BOAMP API](https://www.data.gouv.fr/fr/datasets/boamp-api/).
 
 ## Dependencies
 
-List the dependencies necessary to the project so that it can run locally :
-- language, libraries and packages
-- how to install them
-- recommended : use an environment file such as requirements.txt (py) or DESCRIPTION (R)
+To install the necessary dependencies, run the following command:
+
+```bash
+npm install react
+```
 
 ## Development
 
-Indicate how to run the solution in development mode locally.
+in the frontend directory, you can run:
+
+```bash
+npm install
+```
+
+Then, you can start the application with:
+
+```bash
+npm start
+```
 
 ## Production
 
-Indicate, if it exist, a documentation to run the solution in production mode.
+No production build is available yet.
