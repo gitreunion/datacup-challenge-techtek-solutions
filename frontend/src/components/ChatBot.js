@@ -61,7 +61,7 @@ const ChatBot = ({ className }) => {
                   "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                  prompt: "Votre texte ici",
+                  prompt: inputValue,
                   model: "llama3.1"
                 })
               })
