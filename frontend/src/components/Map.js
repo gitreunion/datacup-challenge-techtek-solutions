@@ -3,9 +3,35 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import InfoTab from './InfoTab';
 import Header from "./Header";
+import axios from 'axios';
 
 export default function Map() {
     const [showInfoTab, setShowInfoTab] = useState(false);
+    const [contracts, setContracts] = useState([]);
+
+    async function fetchAllContracts() {
+        try {
+            const response = await axios.get(
+                'https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records',
+                {
+                    params: {
+                        select: 'id, objet, dateparution, datefindiffusion, datelimitereponse, nomacheteur',
+                        where: 'code_departement=974',
+                        limit: 20,
+                    },
+                }
+            );
+            console.log('Contracts:', response.data.results);
+            setContracts(response.data.results || []);
+        } catch (error) {
+            console.error('Error fetching contracts:', error);
+            setContracts([]);
+        }
+    }
+
+    useEffect(() => {
+        fetchAllContracts();
+    }, []);
 
     useEffect(() => {
         if (!L.DomUtil.get('map')._leaflet_id) {
@@ -41,7 +67,7 @@ export default function Map() {
         <div className="relative">
             <Header className={showInfoTab ? 'translate-x-1/4' : ''} />
             <div id="map" style={{ height: '100vh', zIndex: 1 }} />
-            {showInfoTab && <InfoTab onClose={() => setShowInfoTab(false)} />}
+            {showInfoTab && <InfoTab contracts={contracts} onClose={() => setShowInfoTab(false)} />}
         </div>
     );
 };
