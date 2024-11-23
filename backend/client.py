@@ -88,25 +88,58 @@ async def start_conversation(request: StartConversationRequest):
     return {"message": f"Conversation {conv_id} started"}
 
 
+# @app.post("/conversation/{conv_id}/message")
+# async def add_message(conv_id: str, query: Query):
+#     if conv_id not in conversations:
+#         raise HTTPException(status_code=404, detail="Conversation not found")
+
+#     conversation = conversations[conv_id]
+#     conversation.messages.append({"role": "user", "content": query.prompt})
+
+#     try:
+#         response = requests.post(
+#             "http://localhost:11434/api/generate",
+#             json={"model": query.model, "prompt": query.prompt}
+#         )
+#         response.raise_for_status()
+#         generated_text = response.json()["response"]
+#         conversation.messages.append({"role": "assistant", "content": generated_text})
+#         return {"generated_text": generated_text}
+#     except requests.RequestException as e:
+#         raise HTTPException(status_code=500, detail=f"Error communicating with Ollama: {str(e)}")
+
 @app.post("/conversation/{conv_id}/message")
 async def add_message(conv_id: str, query: Query):
     if conv_id not in conversations:
         raise HTTPException(status_code=404, detail="Conversation not found")
 
+    # Récupérer la conversation
     conversation = conversations[conv_id]
+
+    # Ajouter le message utilisateur à l'historique
     conversation.messages.append({"role": "user", "content": query.prompt})
 
+    # Construire un prompt à partir de l'historique
+    prompt_with_history = "\n".join(
+        [f"{msg['role'].capitalize()}: {msg['content']}" for msg in conversation.messages]
+    )
+
     try:
+        # Envoyer tout l'historique au modèle
         response = requests.post(
             "http://localhost:11434/api/generate",
-            json={"model": query.model, "prompt": query.prompt}
+            json={"model": query.model, "prompt": prompt_with_history}
         )
         response.raise_for_status()
         generated_text = response.json()["response"]
+
+        # Ajouter la réponse du modèle à l'historique
         conversation.messages.append({"role": "assistant", "content": generated_text})
+
         return {"generated_text": generated_text}
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Error communicating with Ollama: {str(e)}")
+
 
 @app.get("/conversation/{conv_id}")
 async def get_conversation(conv_id: str):
