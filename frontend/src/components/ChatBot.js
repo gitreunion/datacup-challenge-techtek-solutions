@@ -2,26 +2,41 @@ import React, { useState } from 'react'
 
 const ChatBot = ({ className }) => {
     // Déclaration des états locaux avec useState
-    const [isChatOpen, setIsChatOpen] = useState(false); // Gère l'état d'ouverture/fermeture du chat
+    const [isChatOpen, setIsChatOpen] = useState(false) // Gère l'état d'ouverture/fermeture du chat
     const [messages, setMessages] = useState([
         { sender: 'GUIA', text: 'Comment puis-je me rendre utile ?' }, // Message d'accueil initial
-    ]);
-    const [inputValue, setInputValue] = useState(''); // Valeur du champ de saisie
+    ])
+    const [inputValue, setInputValue] = useState('') // Valeur du champ de saisie
 
     // Fonction pour gérer l'envoi d'un message
     const handleSendMessage = async (e) => {
-        e.preventDefault(); // Empêche le rechargement de la page lors de l'envoi du formulaire
+        e.preventDefault() // Empêche le rechargement de la page lors de l'envoi du formulaire
 
         // Vérifie si le champ de saisie est vide avant de continuer
-        if (inputValue.trim() === '') return;
+        if (inputValue.trim() === '') return
 
         // Crée un message pour l'utilisateur et l'ajoute à la liste des messages
-        const newMessage = { sender: 'Vous', text: inputValue };
-        setMessages([...messages, newMessage]);
-        setInputValue(''); // Réinitialise le champ de saisie
+        const newMessage = { sender: 'Vous', text: inputValue }
+        setMessages([...messages, newMessage])
+        setInputValue('') // Réinitialise le champ de saisie
+
+        // Ajout du contexte de la conversation
+        const context = `
+        Contexte :
+        
+        Pour soutenir le développement territorial et renforcer la compétitivité des entreprises, la centralisation et l’organisation des données liées aux marchés publics sur une plateforme unique est essentielle. Cette plateforme servirait de carrefour d’information, facilitant la transparence et l’accès aux données des marchés publics, tant actuels que futurs, tout en permettant une analyse approfondie des consultations passées.
+        Objectif :
+        
+        L'objectif est de regrouper tous les appels d’offres sur une plateforme unique, afin de rendre les informations relatives aux marchés publics plus accessibles. Cela encouragerait une plus grande participation des entreprises locales, stimulant ainsi la compétitivité sur le territoire.
+        
+        Rôle :
+        
+        Tu es un chatbot spécialisé dans les marchés publics à l'île de la Réunion.
+        `;
+        
 
         try {
-            // Envoie la requête à l'API backend pour obtenir la réponse du chatbot
+            // Envoie la requête à l'API backend avec le contexte
             const response = await fetch('http://localhost:11434/api/chat', {
                 method: 'POST',
                 headers: {
@@ -31,27 +46,30 @@ const ChatBot = ({ className }) => {
                 body: JSON.stringify({
                     message: inputValue,
                     model: 'llama3.1', // Spécifie le modèle AI à utiliser
+                    context: context, // Ajoute le contexte à la requête
                 }),
-            });
+            })
 
             if (!response.ok) {
-                throw new Error('Erreur lors de la récupération de la réponse du serveur');
+                throw new Error(
+                    'Erreur lors de la récupération de la réponse du serveur'
+                )
             }
 
             // Attend la réponse de l'API et l'ajoute à la liste des messages
-            const aiResponse = await response.text();
+            const aiResponse = await response.text()
             setMessages((prevMessages) => [
                 ...prevMessages,
                 { sender: 'AI', text: aiResponse },
-            ]);
+            ])
         } catch (error) {
             // Gère les erreurs liées à la requête API et envoie un message d'erreur
-            console.error('Error calling API:', error);
+            console.error('Error calling API:', error)
             const aiErrorResponse = {
                 sender: 'AI',
                 text: 'Désolé, une erreur est survenue. Essayez encore.',
-            };
-            setMessages((prevMessages) => [...prevMessages, aiErrorResponse]);
+            }
+            setMessages((prevMessages) => [...prevMessages, aiErrorResponse])
         }
     }
 
@@ -100,7 +118,9 @@ const ChatBot = ({ className }) => {
                 >
                     {/* En-tête du chatbot */}
                     <div className="flex flex-col space-y-1.5 pb-6">
-                        <h2 className="font-semibold text-lg tracking-tight">GUIA</h2>
+                        <h2 className="font-semibold text-lg tracking-tight">
+                            GUIA
+                        </h2>
                         <p className="text-sm text-[#6b7280] leading-3">
                             Powered by TechTek solutions
                         </p>
@@ -169,7 +189,7 @@ const ChatBot = ({ className }) => {
                 </div>
             )}
         </div>
-    );
+    )
 }
 
-export default ChatBot;
+export default ChatBot
