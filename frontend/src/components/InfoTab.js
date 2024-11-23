@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function InfoTab({ contracts, onClose }) {
+export default function InfoTab({ contracts, onClose, isLoading }) {
     return (
         <div className="fixed left-0 top-0 h-full w-1/4 p-4 bg-white z-50 shadow-lg overflow-hidden ">
             <div className="flex flex-col h-full gap-4  ">

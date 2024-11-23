@@ -33,7 +33,6 @@ function getKeyValue(obj, keys) {
             }
         }
     }
-
     return null;
 }
 
@@ -42,12 +41,12 @@ export default function Map() {
     const [showAllContracts, setShowAllContracts] = useState(false);
     const [contracts, setContracts] = useState([]);
     const [map, setMap] = useState(null);
-    const [currentPostalCode] = useState("97400");
+    const [currentPostalCode, setCurrentPostalCode] = useState("97400");
     const [isLoading, setIsLoading] = useState(false);
     const [selectedContract, setSelectedContract] = useState(null);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
-
+    
     useEffect(() => {
         if (!L.DomUtil.get('map')._leaflet_id) {
             const mapInstance = L.map('map', {
@@ -69,25 +68,25 @@ export default function Map() {
 
     useEffect(() => {
         if (map) {
-            fetchContracts(map, category, search);
+            fetchAllContracts(map, category, search);
         }
-    }, [category, map, search]);
+    }, [map, search, category]);
 
-    async function fetchContracts(mapInstance, category, search) {
+    async function fetchAllContracts(map, category, search) {
         const limit = 100;
         let offset = 0;
         const allContracts = [];
         const processedPostalCodes = new Set();
-        
+
         setIsLoading(true);
-        if (mapInstance.markerClusterGroup) {
-            mapInstance.removeLayer(mapInstance.markerClusterGroup);
+        if (map.markerClusterGroup) {
+            map.removeLayer(map.markerClusterGroup);
         }
-    
+
         const markerClusterGroup = L.markerClusterGroup();
-        mapInstance.addLayer(markerClusterGroup);
-        mapInstance.markerClusterGroup = markerClusterGroup;
-    
+        map.addLayer(markerClusterGroup);
+        map.markerClusterGroup = markerClusterGroup;
+
         try {
             while (offset < 1000) {
                 const whereClause = `code_departement=974${category ? ` and type_marche="${category}"` : ''}`;
@@ -98,17 +97,17 @@ export default function Map() {
                             select: 'id, idweb, filename, objet, dateparution, datefindiffusion, datelimitereponse, nomacheteur, donnees',
                             where: whereClause,
                             limit,
-                            order_by: 'dateparution DESC',
+                            order_by: 'datelimitereponse DESC',
                             offset,
                         },
                     }
                 );
-                
+
                 const results = response.data.results || [];
                 if (results.length === 0) {
                     break;
                 }
-    
+
                 results.forEach((result) => {
                     var date_now = new Date();
                     var date_limit = new Date(result.datelimitereponse);
@@ -118,55 +117,51 @@ export default function Map() {
                         allContracts.push(result);
                     }
                 });
-    
+
                 results.forEach((result) => {
                     let { donnees } = result;
                     if (typeof donnees === 'string') {
                         donnees = JSON.parse(donnees);
                     }
-    
+
                     const cp = getKeyValue(donnees, ["cp", "Code postal", "code postal"]) || "97400";
                     if (!processedPostalCodes.has(cp)) {
                         processedPostalCodes.add(cp);
-    
+
                         const coordinates = gpsdata[cp] || gpsdata["97400"];
                         if (!coordinates) {
-                            console.warn(`No coordinates found for postal code: ${cp}`);
+                            console.warn(`No coordina{tes found for postal code: ${cp}`);
                             return;
                         }
-    
+                        
                         const { Longitude, Latitude } = coordinates;
-    
                         if (result.objet.toLowerCase().includes(search.toLowerCase())) {
-                            const marker = L.marker([Latitude, Longitude], {
-                                icon: L.icon({
-                                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                                    iconSize: [30, 30],
-                                    iconAnchor: [15, 30],
-                                }),
-                            });
-    
-                            marker.on('click', () => {
-                                setSelectedContract(result);
-                                setShowInfoTab(true);
-                                setShowAllContracts(false);
-                                mapInstance.setView([Latitude, Longitude], 15);
-                            });
-    
-                            markerClusterGroup.addLayer(marker, { chunkedLoading: true, chunkProgress: true });
-                        }
+                        const marker = L.marker([Latitude, Longitude], {
+                            icon: L.icon({
+                                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 30],
+                            }),
+                        });
+
+                        marker.on('click', () => {
+                            setCurrentPostalCode(cp);
+                            setShowInfoTab(true);
+                            setShowAllContracts(false);
+                            map.setView([Latitude, Longitude], 15);
+                        });
+                    
+
+                        markerClusterGroup.addLayer(marker, { chunkedLoading: true, chunkProgress: true });
                     }
+                }
                 });
-    
+
                 offset += limit;
             }
-    
-            const filteredContracts = allContracts.filter(contract => {
-                return contract.objet.toLowerCase().includes(search.toLowerCase());
-            });
-    
-            setContracts(filteredContracts);
-    
+
+            map.addLayer(markerClusterGroup);
+            setContracts(allContracts);
         } catch (error) {
             console.error('Error fetching contracts:', error.message);
             alert('Failed to fetch contracts. Please try again later.');
@@ -174,13 +169,10 @@ export default function Map() {
             setIsLoading(false);
         }
     }
-    
-    
-
     const filteredContracts = contracts.filter((contract) => {
         const donnees = typeof contract.donnees === 'string' ? JSON.parse(contract.donnees) : contract.donnees;
         const cp = getKeyValue(donnees, ["cp", "Code postal", "code postal"]);
-        return cp === currentPostalCode && contract.objet.toLowerCase().includes(search.toLowerCase());
+        return cp === currentPostalCode;
     });
 
     return (
