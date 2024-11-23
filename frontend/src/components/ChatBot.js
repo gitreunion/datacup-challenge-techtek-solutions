@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-const ChatBot = ({className}) => {
+const ChatBot = ({ className }) => {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [messages, setMessages] = useState([
         { sender: 'GUIA', text: 'Comment puis-je me rendre utile ?' }
     ]);
     const [inputValue, setInputValue] = useState('');
 
-    const handleSendMessage = (e) => {
+    const handleSendMessage = async (e) => {
         e.preventDefault();
         if (inputValue.trim() === '') return;
 
@@ -15,22 +15,41 @@ const ChatBot = ({className}) => {
         setMessages([...messages, newMessage]);
         setInputValue('');
 
-        // Simulate AI response
-        setTimeout(() => {
-            const aiResponse = { sender: 'AI', text: 'Sorry, I couldn\'t find any information in the documentation about that.' };
-            setMessages((prevMessages) => [...prevMessages, aiResponse]);
-        }, 1000);
+        try {
+            const response = await fetch('http://localhost:8080/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json, text/plain, */*',
+                },
+                body: JSON.stringify({ message: inputValue, model: 'llama3.1' }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération de la réponse du serveur');
+            }
+
+            const aiResponse = await response.text();
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { sender: 'AI', text: aiResponse }
+            ]);
+        } catch (error) {
+            console.error('Error calling API:', error);
+            const aiErrorResponse = { sender: 'AI', text: 'Désolé, une erreur est survenue. Essayez encore.' };
+            setMessages((prevMessages) => [...prevMessages, aiErrorResponse]);
+        }
     };
 
     return (
-        <div className={`absolute transition-all ${className}`} style={{zIndex: 1000, backgroundColor: "red"}}>
+        <div className={`absolute transition-all ${className}`} style={{ zIndex: 1000, backgroundColor: "red" }}>
             <button
                 className={`absolute bottom-2 ml-2 inline-flex transition-all ${className} items-center justify-center text-sm font-medium disabled:pointer-events-none disabled:opacity-50 border rounded-full w-16 h-16 bg-black hover:bg-gray-700 m-0 cursor-pointer border-gray-200 bg-none p-0 normal-case leading-5 hover:text-gray-900`}
                 type="button"
                 aria-haspopup="dialog"
                 aria-expanded={isChatOpen}
                 onClick={() => setIsChatOpen(!isChatOpen)}
-                style={{zIndex: 1000}}
+                style={{ zIndex: 1000 }}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
