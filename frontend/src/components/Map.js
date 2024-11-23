@@ -51,13 +51,15 @@ export default function Map() {
 
     useEffect(() => {
         if (!L.DomUtil.get('map')._leaflet_id) {
+            // Initialize the Leaflet map
             const mapInstance = L.map('map', {
-                center: [-21.105158264291664, 55.52111226755224],
-                zoom: 10,
-                zoomControl: false,
+                center: [-21.105158264291664, 55.52111226755224], // Center coordinates of the map
+                zoom: 10, // Initial zoom level
+                zoomControl: false, // Disable zoom controls
             })
             setMap(mapInstance)
 
+            // Add a tile layer to the map (Esri satellite imagery)
             L.tileLayer(
                 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                 {
@@ -66,6 +68,7 @@ export default function Map() {
                 }
             ).addTo(mapInstance)
 
+            // Add zoom control to the map
             L.control
                 .zoom({
                     position: 'bottomright',
@@ -76,6 +79,7 @@ export default function Map() {
 
     const handleRecenter = () => {
         if (map) {
+            // Recenter the map to the initial coordinates
             map.setView([-21.105158264291664, 55.52111226755224], 10)
             setShowInfoTab(false)
         }
@@ -83,6 +87,7 @@ export default function Map() {
 
     useEffect(() => {
         if (map) {
+            // Fetch all contracts whenever the map, search, or category changes
             fetchAllContracts(map, category, search)
         }
     }, [map, search, category])
@@ -94,15 +99,19 @@ export default function Map() {
         const processedPostalCodes = new Set()
 
         setIsLoading(true)
+
+        // Remove existing marker clusters from the map
         if (map.markerClusterGroup) {
             map.removeLayer(map.markerClusterGroup)
         }
 
+        // Create a new marker cluster group
         const markerClusterGroup = L.markerClusterGroup()
         map.addLayer(markerClusterGroup)
         map.markerClusterGroup = markerClusterGroup
 
         try {
+            // Loop to fetch contracts from the API
             while (offset < 1000) {
                 const whereClause = `code_departement=974${
                     category ? ` and type_marche="${category}"` : ''
@@ -125,6 +134,7 @@ export default function Map() {
                     break
                 }
 
+                // Filter out contracts that have a past response deadline
                 results.forEach((result) => {
                     var date_now = new Date()
                     var date_limit = new Date(result.datelimitereponse)
@@ -135,6 +145,7 @@ export default function Map() {
                     }
                 })
 
+                // Add markers for contracts
                 results.forEach((result) => {
                     let { donnees } = result
                     if (typeof donnees === 'string') {
@@ -188,8 +199,6 @@ export default function Map() {
                 offset += limit
             }
 
-            //map.addLayer(markerClusterGroup);
-
             const filteredContracts = allContracts.filter((contract) => {
                 return contract.objet
                     .toLowerCase()
@@ -205,6 +214,7 @@ export default function Map() {
         }
     }
 
+    // Filter the contracts by the selected postal code
     const filteredContracts = contracts.filter((contract) => {
         const donnees =
             typeof contract.donnees === 'string'
@@ -225,6 +235,7 @@ export default function Map() {
             <div id="map" style={{ height: '100vh', zIndex: 1 }} />
             <RightSide />
 
+            {/* Button to show all contracts */}
             <button
                 className="absolute bottom-0 p-4 mb-6 bg-white z-50 shadow-lg rounded-full"
                 onClick={() => {
@@ -238,6 +249,7 @@ export default function Map() {
                     : `${contracts.length} contrats trouvés`}
             </button>
 
+            {/* Button to recenter the map */}
             <button
                 className="absolute bottom-24 right-3 bg-white text-black z-50 rounded-sm border-1 border-black"
                 onClick={handleRecenter}
@@ -245,8 +257,10 @@ export default function Map() {
                 <img src={Agrandir} alt="Recenter" width="30" height="30" />
             </button>
 
+            {/* Chatbot */}
             <ChatBot className={showInfoTab ? 'translate-x-60' : ''} />
 
+            {/* Info tab */}
             {showInfoTab && (
                 <InfoTab
                     contracts={showAllContracts ? contracts : filteredContracts}

@@ -2,33 +2,39 @@ import React from 'react'
 
 export default function InfoTab({ contracts, onClose, isLoading }) {
     return (
-        <div className="fixed left-0 top-0 h-full w-1/4 p-4 bg-white z-50 shadow-lg overflow-hidden ">
-            <div className="flex flex-col h-full gap-4  ">
+        <div className="fixed left-0 top-0 h-full w-1/4 p-4 bg-white z-50 shadow-lg overflow-hidden">
+            {/* Conteneur principal avec une position fixe et un style de box-shadow */}
+            <div className="flex flex-col h-full gap-4">
+                {/* Bouton pour fermer l'onglet d'informations */}
                 <button
                     className="self-end bg-red-500 hover:bg-red-700 text-white font-bold px-4 rounded-full h-8"
                     onClick={onClose}
                 >
                     Close
                 </button>
+
+                {/* Conteneur pour afficher la liste des contrats */}
                 <div className="overflow-y-auto flex flex-col max-h-full gap-2">
+                    {/* Parcours de chaque contrat */}
                     {contracts.map((contract) =>
                         contract.id ? (
                             <div
                                 key={contract.id}
                                 className="flex flex-col p-6 bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-lg transition-shadow relative"
                             >
+                                {/* Titre du contrat */}
                                 <h3 className="text-2xl font-semibold text-gray-900 mb-2">
                                     {contract.objet}
                                 </h3>
+
                                 <div className="text-sm text-gray-600">
+                                    {/* Informations sur le contrat */}
                                     <p className="mb-1">
                                         <strong>Date de parution:</strong>{' '}
                                         {contract.dateparution}
                                     </p>
                                     <p className="mb-1">
-                                        <strong>
-                                            Date de fin de diffusion:
-                                        </strong>{' '}
+                                        <strong>Date de fin de diffusion:</strong>{' '}
                                         {contract.datefindiffusion}
                                     </p>
                                     <p className="mb-1">
@@ -39,6 +45,8 @@ export default function InfoTab({ contracts, onClose, isLoading }) {
                                         <strong>Nom de l'acheteur:</strong>{' '}
                                         {contract.nomacheteur}
                                     </p>
+
+                                    {/* Lien vers les détails du contrat */}
                                     <a
                                         href={`https://www.boamp.fr/avis/detail/${contract.idweb}`}
                                         target="_blank"

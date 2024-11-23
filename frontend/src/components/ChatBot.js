@@ -1,22 +1,28 @@
 import React, { useState } from 'react'
 
 const ChatBot = ({ className }) => {
-    const [isChatOpen, setIsChatOpen] = useState(false)
+    // Déclaration des états locaux avec useState
+    const [isChatOpen, setIsChatOpen] = useState(false); // Gère l'état d'ouverture/fermeture du chat
     const [messages, setMessages] = useState([
-        { sender: 'GUIA', text: 'Comment puis-je me rendre utile ?' },
-    ])
-    const [inputValue, setInputValue] = useState('')
+        { sender: 'GUIA', text: 'Comment puis-je me rendre utile ?' }, // Message d'accueil initial
+    ]);
+    const [inputValue, setInputValue] = useState(''); // Valeur du champ de saisie
 
+    // Fonction pour gérer l'envoi d'un message
     const handleSendMessage = async (e) => {
-        e.preventDefault()
-        if (inputValue.trim() === '') return
+        e.preventDefault(); // Empêche le rechargement de la page lors de l'envoi du formulaire
 
-        const newMessage = { sender: 'Vous', text: inputValue }
-        setMessages([...messages, newMessage])
-        setInputValue('')
+        // Vérifie si le champ de saisie est vide avant de continuer
+        if (inputValue.trim() === '') return;
+
+        // Crée un message pour l'utilisateur et l'ajoute à la liste des messages
+        const newMessage = { sender: 'Vous', text: inputValue };
+        setMessages([...messages, newMessage]);
+        setInputValue(''); // Réinitialise le champ de saisie
 
         try {
-            const response = await fetch('http://localhost:8080/api/chat', {
+            // Envoie la requête à l'API backend pour obtenir la réponse du chatbot
+            const response = await fetch('http://localhost:11434/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -24,28 +30,28 @@ const ChatBot = ({ className }) => {
                 },
                 body: JSON.stringify({
                     message: inputValue,
-                    model: 'llama3.1',
+                    model: 'llama3.1', // Spécifie le modèle AI à utiliser
                 }),
-            })
+            });
 
             if (!response.ok) {
-                throw new Error(
-                    'Erreur lors de la récupération de la réponse du serveur'
-                )
+                throw new Error('Erreur lors de la récupération de la réponse du serveur');
             }
 
-            const aiResponse = await response.text()
+            // Attend la réponse de l'API et l'ajoute à la liste des messages
+            const aiResponse = await response.text();
             setMessages((prevMessages) => [
                 ...prevMessages,
                 { sender: 'AI', text: aiResponse },
-            ])
+            ]);
         } catch (error) {
-            console.error('Error calling API:', error)
+            // Gère les erreurs liées à la requête API et envoie un message d'erreur
+            console.error('Error calling API:', error);
             const aiErrorResponse = {
                 sender: 'AI',
                 text: 'Désolé, une erreur est survenue. Essayez encore.',
-            }
-            setMessages((prevMessages) => [...prevMessages, aiErrorResponse])
+            };
+            setMessages((prevMessages) => [...prevMessages, aiErrorResponse]);
         }
     }
 
@@ -54,6 +60,7 @@ const ChatBot = ({ className }) => {
             className={`absolute transition-all ${className}`}
             style={{ zIndex: 1000, backgroundColor: 'red' }}
         >
+            {/* Bouton pour ouvrir ou fermer le chat */}
             <button
                 className={`absolute bottom-2 ml-2 inline-flex transition-all ${className} items-center justify-center text-sm font-medium disabled:pointer-events-none disabled:opacity-50 border rounded-full w-16 h-16 bg-black hover:bg-gray-700 m-0 cursor-pointer border-gray-200 bg-none p-0 normal-case leading-5 hover:text-gray-900`}
                 type="button"
@@ -81,6 +88,7 @@ const ChatBot = ({ className }) => {
                 </svg>
             </button>
 
+            {/* Affichage du chat si "isChatOpen" est vrai */}
             {isChatOpen && (
                 <div
                     style={{
@@ -90,15 +98,15 @@ const ChatBot = ({ className }) => {
                     }}
                     className={`absolute bottom-[calc(4rem+1.5rem)] ml-2 transition-all ${className} mr-4 bg-white p-6 rounded-lg border border-[#e5e7eb] w-[440px] h-[634px]`}
                 >
+                    {/* En-tête du chatbot */}
                     <div className="flex flex-col space-y-1.5 pb-6">
-                        <h2 className="font-semibold text-lg tracking-tight">
-                            GUIA
-                        </h2>
+                        <h2 className="font-semibold text-lg tracking-tight">GUIA</h2>
                         <p className="text-sm text-[#6b7280] leading-3">
                             Powered by TechTek solutions
                         </p>
                     </div>
 
+                    {/* Affichage des messages */}
                     <div
                         className="pr-4 h-[474px] overflow-y-auto"
                         style={{ minWidth: '100%' }}
@@ -138,6 +146,7 @@ const ChatBot = ({ className }) => {
                         ))}
                     </div>
 
+                    {/* Formulaire de saisie de message */}
                     <div className="flex items-center pt-0">
                         <form
                             className="flex items-center justify-center w-full space-x-2"
@@ -160,7 +169,7 @@ const ChatBot = ({ className }) => {
                 </div>
             )}
         </div>
-    )
+    );
 }
 
-export default ChatBot
+export default ChatBot;
