@@ -10,7 +10,6 @@ import InfoTab from './InfoTab';
 import Header from "./Header";
 import RightSide from "./RightSide";
 
-// Utility function to retrieve deeply nested values from an object
 function getKeyValue(obj, keys) {
     if (!Array.isArray(keys)) {
         keys = [keys];
@@ -47,7 +46,6 @@ export default function Map() {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        // Initialize Leaflet map
         if (!L.DomUtil.get('map')._leaflet_id) {
             const mapInstance = L.map('map', {
                 center: [-21.105158264291664, 55.52111226755224],
@@ -66,9 +64,8 @@ export default function Map() {
 
             fetchAllContracts(mapInstance);
         }
-    }, []);
+    }, [map]);
 
-    // Function to fetch contracts in batches of 100
     async function fetchAllContracts(mapInstance) {
         const limit = 100;
         let offset = 0;
@@ -77,7 +74,6 @@ export default function Map() {
 
         setIsLoading(true);
 
-        // Create a MarkerClusterGroup
         const markerClusterGroup = L.markerClusterGroup();
         mapInstance.addLayer(markerClusterGroup);
 
@@ -102,7 +98,6 @@ export default function Map() {
                 }
                 allContracts.push(...results);
 
-                // Process the current batch of contracts
                 results.forEach((result) => {
                     let { donnees } = result;
                     if (typeof donnees === 'string') {
@@ -133,9 +128,9 @@ export default function Map() {
                             setCurrentPostalCode(cp);
                             setShowInfoTab(true);
                             setShowAllContracts(false);
+                            mapInstance.setView([Latitude, Longitude], 15);
                         });
 
-                        // Add marker to the cluster group
                         markerClusterGroup.addLayer(marker);
                     }
                 });
@@ -143,7 +138,8 @@ export default function Map() {
                 offset += limit;
             }
 
-            setContracts(allContracts); // Update state with all contracts
+            mapInstance.addLayer(markerClusterGroup);
+            setContracts(allContracts);
         } catch (error) {
             console.error('Error fetching contracts:', error.message);
             alert('Failed to fetch contracts. Please try again later.');
@@ -151,8 +147,6 @@ export default function Map() {
             setIsLoading(false);
         }
     }
-
-    // Filter contracts based on the current postal code
     const filteredContracts = contracts.filter((contract) => {
         const donnees = typeof contract.donnees === 'string' ? JSON.parse(contract.donnees) : contract.donnees;
         const cp = getKeyValue(donnees, ["cp", "Code postal", "code postal"]);
