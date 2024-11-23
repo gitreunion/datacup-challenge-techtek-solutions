@@ -87,7 +87,7 @@ export default function Map() {
                     'https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records',
                     {
                         params: {
-                            select: 'id, objet, dateparution, datefindiffusion, datelimitereponse, nomacheteur, donnees',
+                            select: 'id, idweb, filename, objet, dateparution, datefindiffusion, datelimitereponse, nomacheteur, donnees',
                             where: 'code_departement=974',
                             limit,
                             order_by: 'datelimitereponse DESC',
