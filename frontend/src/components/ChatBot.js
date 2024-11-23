@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const ChatBot = ({className}) => {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [messages, setMessages] = useState([
-        { sender: 'AI', text: 'Hi, how can I help you today?' }
+        { sender: 'GUIA', text: 'Comment puis-je me rendre utile ?' }
     ]);
     const [inputValue, setInputValue] = useState('');
 
@@ -11,7 +11,7 @@ const ChatBot = ({className}) => {
         e.preventDefault();
         if (inputValue.trim() === '') return;
 
-        const newMessage = { sender: 'You', text: inputValue };
+        const newMessage = { sender: 'Vous', text: inputValue };
         setMessages([...messages, newMessage]);
         setInputValue('');
 
@@ -43,8 +43,8 @@ const ChatBot = ({className}) => {
                 <div style={{ boxShadow: '0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgb(0 0 0 / 0.05)', zIndex: 1000 }}
                     className={`absolute bottom-[calc(4rem+1.5rem)] ml-2 transition-all ${className} mr-4 bg-white p-6 rounded-lg border border-[#e5e7eb] w-[440px] h-[634px]`}>
                     <div className="flex flex-col space-y-1.5 pb-6">
-                        <h2 className="font-semibold text-lg tracking-tight">Chatbot</h2>
-                        <p className="text-sm text-[#6b7280] leading-3">Powered by Mendable and Vercel</p>
+                        <h2 className="font-semibold text-lg tracking-tight">GUIA</h2>
+                        <p className="text-sm text-[#6b7280] leading-3">Powered by TechTek solutions</p>
                     </div>
 
                     <div className="pr-4 h-[474px] overflow-y-auto" style={{ minWidth: '100%', display: 'table' }}>
@@ -68,7 +68,7 @@ const ChatBot = ({className}) => {
                         <form className="flex items-center justify-center w-full space-x-2" onSubmit={handleSendMessage}>
                             <input
                                 className="flex h-10 w-full rounded-md border border-[#e5e7eb] px-3 py-2 text-sm placeholder-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#9ca3af] disabled:cursor-not-allowed disabled:opacity-50 text-[#030712] focus-visible:ring-offset-2"
-                                placeholder="Type your message"
+                                placeholder="Entrez votre message"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
@@ -76,7 +76,7 @@ const ChatBot = ({className}) => {
                                 className="inline-flex items-center justify-center rounded-md text-sm font-medium text-[#f9fafb] disabled:pointer-events-none disabled:opacity-50 bg-black hover:bg-[#111827E6] h-10 px-4 py-2"
                                 type="submit"
                             >
-                                Send
+                                Soumettre
                             </button>
                         </form>
                     </div>
