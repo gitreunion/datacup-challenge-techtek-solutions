@@ -40,86 +40,112 @@ export default function Map() {
     const [contracts, setContracts] = useState([]);
     const [map, setMap] = useState(null);
     const [currentPostalCode, setCurrentPostalCode] = useState("97400");
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        // Initialize Leaflet map
         if (!L.DomUtil.get('map')._leaflet_id) {
-            const map = L.map('map', {
+            const mapInstance = L.map('map', {
                 center: [-21.105158264291664, 55.52111226755224],
                 zoom: 10,
-                zoomControl: false
+                zoomControl: false,
             });
-            setMap(map);
+            setMap(mapInstance);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            }).addTo(mapInstance);
 
             L.control.zoom({
-                position: 'bottomright'
-            }).addTo(map);
+                position: 'bottomright',
+            }).addTo(mapInstance);
 
-            async function fetchAllContracts() {
-                try {
-                    const response = await axios.get(
-                        'https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records',
-                        {
-                            params: {
-                                select: 'id, objet, dateparution, datefindiffusion, datelimitereponse, nomacheteur, donnees',
-                                where: 'code_departement=974',
-                                limit: 100,
-                                order_by: 'datelimitereponse DESC',
-                                offset: 100
-                            },
-                        }
-                    );
-                    setContracts(response.data.results);
-
-                    const processedPostalCodes = new Set();
-                    response.data.results.forEach((result) => {
-                        if (typeof result.donnees === 'string') {
-                            result.donnees = JSON.parse(result.donnees);
-                        }
-                        var cp = getKeyValue(result.donnees, ["cp", "Code postal", "code postal", "Code Postal", "Code Postal de l'acheteur", "Code postal de l'acheteur", "Code postal de l'acheteur (acheteur)", "Code postal de l'acheteur (acheteur)", "Code postal de l'acheteur (acheteur) (acheteur)", "Code postal de l'acheteur (acheteur) (acheteur)"]);
-                        if (cp === null || cp === undefined || cp === "") {
-                            cp = "97400";
-                            result.donnees.cp = cp;
-                        }
-
-                        if (!processedPostalCodes.has(cp)) {
-                            processedPostalCodes.add(cp);
-                            const coordinates = gpsdata[cp] || gpsdata["97400"];
-                            if (!coordinates) {
-                                console.error(`No coordinates found for postal code: ${cp}`);
-                                return;
-                            }
-                            var longitude = coordinates.Longitude;
-                            var latitude = coordinates.Latitude;
-                            var marker = L.marker([latitude, longitude]).addTo(map)
-                                .setIcon(L.icon({
-                                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                                    iconSize: [30, 30],
-                                    iconAnchor: [15, 30],
-                                }));
-                            marker.on('click', () => {
-                                setCurrentPostalCode(cp);
-                                setShowInfoTab(true);
-                                setShowAllContracts(false);
-                            });
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error fetching contracts:', error);
-                }
-            }
-            fetchAllContracts();
+            fetchAllContracts(mapInstance);
         }
-    }, [map]);
+    }, []);
 
-    const contractsCount = contracts.length;
+    // Function to fetch contracts in batches of 20
+    async function fetchAllContracts(mapInstance) {
+        const limit = 20; // Number of contracts per batch
+        let offset = 0; // Starting offset
+        const allContracts = [];
+        const processedPostalCodes = new Set();
 
-    const filteredContracts = contracts.filter(contract => {
+        setIsLoading(true);
+
+        try {
+            while (true) {
+                const response = await axios.get(
+                    'https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records',
+                    {
+                        params: {
+                            select: 'id, objet, dateparution, datefindiffusion, datelimitereponse, nomacheteur, donnees',
+                            where: 'code_departement=974',
+                            limit,
+                            order_by: 'datelimitereponse DESC',
+                            offset,
+                        },
+                    }
+                );
+
+                const results = response.data.results || [];
+                if (results.length === 0) {
+                    // Break the loop when no more contracts are returned
+                    break;
+                }
+
+                allContracts.push(...results);
+
+                // Process current batch of contracts
+                results.forEach((result) => {
+                    let { donnees } = result;
+                    if (typeof donnees === 'string') {
+                        donnees = JSON.parse(donnees);
+                    }
+
+                    const cp = getKeyValue(donnees, ["cp", "Code postal", "code postal"]) || "97400";
+                    if (!processedPostalCodes.has(cp)) {
+                        processedPostalCodes.add(cp);
+
+                        const coordinates = gpsdata[cp] || gpsdata["97400"];
+                        if (!coordinates) {
+                            console.warn(`No coordinates found for postal code: ${cp}`);
+                            return;
+                        }
+
+                        const { Longitude, Latitude } = coordinates;
+                        const marker = L.marker([Latitude, Longitude])
+                            .addTo(mapInstance)
+                            .setIcon(L.icon({
+                                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 30],
+                            }));
+
+                        marker.on('click', () => {
+                            setCurrentPostalCode(cp);
+                            setShowInfoTab(true);
+                            setShowAllContracts(false);
+                        });
+                    }
+                });
+
+                offset += limit; // Increment offset for the next batch
+            }
+
+            setContracts(allContracts); // Update state with all contracts
+        } catch (error) {
+            console.error('Error fetching contracts:', error.message);
+            alert('Failed to fetch contracts. Please try again later.');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    // Filter contracts based on the current postal code
+    const filteredContracts = contracts.filter((contract) => {
         const donnees = typeof contract.donnees === 'string' ? JSON.parse(contract.donnees) : contract.donnees;
-        const cp = getKeyValue(donnees, ["cp", "Code postal", "code postal", "Code Postal", "Code Postal de l'acheteur", "Code postal de l'acheteur", "Code postal de l'acheteur (acheteur)", "Code postal de l'acheteur (acheteur)", "Code postal de l'acheteur (acheteur) (acheteur)", "Code postal de l'acheteur (acheteur) (acheteur)"]);
+        const cp = getKeyValue(donnees, ["cp", "Code postal", "code postal"]);
         return cp === currentPostalCode;
     });
 
@@ -128,16 +154,24 @@ export default function Map() {
             <Header className={showInfoTab ? 'translate-x-1/4' : ''} />
             <div id="map" style={{ height: '100vh', zIndex: 1 }} />
             <RightSide />
+
             <button
                 className="absolute bottom-0 p-4 mb-6 bg-white z-50 shadow-lg rounded-full"
                 onClick={() => {
                     setShowInfoTab(true);
                     setShowAllContracts(true);
                 }}
+                disabled={isLoading}
             >
-                {contractsCount} contrats trouvés
+                {isLoading ? 'Loading...' : `${contracts.length} contrats trouvés`}
             </button>
-            {showInfoTab && <InfoTab contracts={showAllContracts ? contracts : filteredContracts} onClose={() => setShowInfoTab(false)} />}
+
+            {showInfoTab && (
+                <InfoTab
+                    contracts={showAllContracts ? contracts : filteredContracts}
+                    onClose={() => setShowInfoTab(false)}
+                />
+            )}
         </div>
     );
-};
+}
