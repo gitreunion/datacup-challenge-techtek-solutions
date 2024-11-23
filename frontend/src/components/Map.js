@@ -78,7 +78,7 @@ export default function Map() {
         mapInstance.addLayer(markerClusterGroup);
 
         try {
-            while (allContracts.length < 1000) {
+            while (offset < 1000) {
                 const response = await axios.get(
                     'https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records',
                     {
@@ -96,8 +96,18 @@ export default function Map() {
                 if (results.length === 0) {
                     break;
                 }
-                allContracts.push(...results);
 
+                results.forEach((result) => {
+                    var date_now = new Date();
+                    var date_limit = new Date(result.datelimitereponse);
+                    if (date_now > date_limit) {
+                        results.pop(result);
+                    } else {
+                        allContracts.push(result);
+                    }
+                });
+
+                // Process the current batch of contracts
                 results.forEach((result) => {
                     let { donnees } = result;
                     if (typeof donnees === 'string') {
@@ -131,7 +141,7 @@ export default function Map() {
                             mapInstance.setView([Latitude, Longitude], 15);
                         });
 
-                        markerClusterGroup.addLayer(marker);
+                        markerClusterGroup.addLayer(marker, { chunkedLoading: true, chunkProgress: true });
                     }
                 });
 
