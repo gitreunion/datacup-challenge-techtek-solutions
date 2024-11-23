@@ -168,8 +168,13 @@ export default function Map() {
                 offset += limit;
             }
 
-            map.addLayer(markerClusterGroup);
-            setContracts(allContracts);
+            //map.addLayer(markerClusterGroup);
+
+            const filteredContracts = allContracts.filter(contract => {
+                return contract.objet.toLowerCase().includes(search.toLowerCase());
+            });
+    
+            setContracts(filteredContracts);
         } catch (error) {
             console.error('Error fetching contracts:', error.message);
             alert('Failed to fetch contracts. Please try again later.');
