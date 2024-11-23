@@ -1,10 +1,18 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
-import WidgetsItems from './WidgetsItems';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
+import WidgetsItems from './WidgetsItems'
 
-export default function Header({ className, search, setSearch, onCategoryChange }) {
+export default function Header({
+    className,
+    search,
+    setSearch,
+    onCategoryChange,
+}) {
     return (
-        <header className={`absolute w-full p-4 flex items-center transition-all ${className}`} style={{ zIndex: 1000 }}>
+        <header
+            className={`absolute w-full p-4 flex items-center transition-all ${className}`}
+            style={{ zIndex: 1000 }}
+        >
             <div className="flex items-center space-x-4">
                 <div className="relative">
                     <input
@@ -29,10 +37,22 @@ export default function Header({ className, search, setSearch, onCategoryChange 
             </div>
 
             <div className="relative ml-6 flex gap-6">
-                <WidgetsItems name="Fournitures" category="FOURNITURES" onCategoryChange={onCategoryChange} />
-                <WidgetsItems name="Services" category="SERVICES" onCategoryChange={onCategoryChange} />
-                <WidgetsItems name="Travaux" category="TRAVAUX" onCategoryChange={onCategoryChange} />
+                <WidgetsItems
+                    name="Fournitures"
+                    category="FOURNITURES"
+                    onCategoryChange={onCategoryChange}
+                />
+                <WidgetsItems
+                    name="Services"
+                    category="SERVICES"
+                    onCategoryChange={onCategoryChange}
+                />
+                <WidgetsItems
+                    name="Travaux"
+                    category="TRAVAUX"
+                    onCategoryChange={onCategoryChange}
+                />
             </div>
         </header>
-    );
+    )
 }
