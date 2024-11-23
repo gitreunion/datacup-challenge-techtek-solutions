@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import L from 'leaflet';
+import 'leaflet.markercluster';
 import InfoTab from './InfoTab';
 import Header from "./Header";
 import RightSide from "./RightSide";
@@ -42,6 +45,7 @@ export default function Map() {
     const [currentPostalCode, setCurrentPostalCode] = useState("97400");
     const [isLoading, setIsLoading] = useState(false);
     const [selectedContract, setSelectedContract] = useState(null);
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         // Initialize Leaflet map
@@ -75,6 +79,8 @@ export default function Map() {
         setIsLoading(true);
 
         try {
+            const markers = L.markerClusterGroup();
+
             while (allContracts.length < 300) {
                 const response = await axios.get(
                     'https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records',
@@ -115,7 +121,6 @@ export default function Map() {
 
                         const { Longitude, Latitude } = coordinates;
                         const marker = L.marker([Latitude, Longitude])
-                            .addTo(mapInstance)
                             .setIcon(L.icon({
                                 iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
                                 iconSize: [30, 30],
@@ -127,12 +132,15 @@ export default function Map() {
                             setShowInfoTab(true);
                             setShowAllContracts(false);
                         });
+
+                        markers.addLayer(marker);
                     }
                 });
 
                 offset += limit; // Increment offset for the next batch
             }
 
+            mapInstance.addLayer(markers);
             setContracts(allContracts); // Update state with all contracts
         } catch (error) {
             console.error('Error fetching contracts:', error.message);
@@ -145,12 +153,16 @@ export default function Map() {
     const filteredContracts = contracts.filter((contract) => {
         const donnees = typeof contract.donnees === 'string' ? JSON.parse(contract.donnees) : contract.donnees;
         const cp = getKeyValue(donnees, ["cp", "Code postal", "code postal"]);
-        return cp === currentPostalCode;
+        return cp === currentPostalCode && contract.objet.toLowerCase().includes(search.toLowerCase());
     });
 
     return (
         <div className="relative overflow-x-hidden">
-            <Header className={showInfoTab ? 'translate-x-1/4' : ''} />
+            <Header 
+                className={showInfoTab ? 'translate-x-1/4' : ''} 
+                search={search} 
+                onSearchChange={setSearch} 
+            />
             <div id="map" style={{ height: '100vh', zIndex: 1 }} />
             <RightSide />
 

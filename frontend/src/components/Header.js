@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import WidgetsItems from "./WidgetsItems";
 
-export default function Header({ className }) {
+export default function Header({ className, search }) {
     return (
         <header className={`absolute w-full p-4 flex items-center transition-all ${className}`} style={{ zIndex: 1000 }}>
             <div className="flex items-center space-x-4">
