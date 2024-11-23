@@ -4,7 +4,7 @@ import L from 'leaflet';
 import InfoTab from './InfoTab';
 import Header from "./Header";
 import RightSide from "./RightSide";
-import axios from 'axios';
+import axios, { all } from 'axios';
 import gpsdata from '../data.js';
 
 function getKeyValue(obj, keys) {
@@ -66,7 +66,7 @@ export default function Map() {
 
     // Function to fetch contracts in batches of 20
     async function fetchAllContracts(mapInstance) {
-        const limit = 20; // Number of contracts per batch
+        const limit = 100; // Number of contracts per batch
         let offset = 0; // Starting offset
         const allContracts = [];
         const processedPostalCodes = new Set();
@@ -74,7 +74,7 @@ export default function Map() {
         setIsLoading(true);
 
         try {
-            while (true) {
+            while (allContracts.length < 300) {
                 const response = await axios.get(
                     'https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records',
                     {
@@ -93,7 +93,6 @@ export default function Map() {
                     // Break the loop when no more contracts are returned
                     break;
                 }
-
                 allContracts.push(...results);
 
                 // Process current batch of contracts
